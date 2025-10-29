@@ -3,6 +3,55 @@
   position: relative;
 }
 
+/* Переключатель разделов */
+.section-switcher {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 20px 0;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+}
+
+.section-button {
+  padding: 12px 30px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.section-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.section-button.active {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  transform: scale(1.05);
+}
+
+/* Footer стили */
+.footer {
+  margin-top: 40px;
+  padding: 20px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.05);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+}
+
+.footer p {
+  margin: 5px 0;
+}
+
 /* Анимации для переключения табов */
 .main {
   animation: fadeIn 0.3s ease-in;
@@ -110,4 +159,165 @@
 
 ::-webkit-scrollbar-thumb:hover {
   background: #a8a8a8;
+}
+
+/* ============================================
+   Стили для компонентов компаний
+   ============================================ */
+
+.company-list {
+  width: 100%;
+}
+
+.company-form {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Список сотрудников в карточке */
+.employee-list {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.employee-list li {
+  padding: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  margin-bottom: 5px;
+  font-size: 14px;
+}
+
+/* Форма компании - секция сотрудников */
+.form-section {
+  margin: 20px 0;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.form-section h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #f093fb;
+}
+
+.employee-selector {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.employee-selector .form-control {
+  flex: 1;
+}
+
+.btn-add {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 10px 20px;
+  white-space: nowrap;
+}
+
+.btn-add:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.employees-list {
+  margin-top: 15px;
+}
+
+.employees-list h4 {
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.employees-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.employee-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  margin-bottom: 8px;
+  transition: all 0.2s ease;
+}
+
+.employee-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateX(5px);
+}
+
+.employee-item span {
+  font-size: 14px;
+}
+
+.btn-remove-small {
+  background: #ff4444;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s ease;
+}
+
+.btn-remove-small:hover {
+  background: #cc0000;
+  transform: scale(1.1);
+}
+
+.no-employees {
+  text-align: center;
+  padding: 20px;
+  color: rgba(255, 255, 255, 0.5);
+  font-style: italic;
+}
+
+/* Дополнительные кнопки */
+.btn-refresh {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+/* Отладочная информация формы */
+.form-debug {
+  margin-top: 15px;
+  padding: 15px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
+  border-left: 3px solid #f5576c;
+}
+
+.form-debug h4 {
+  margin-top: 0;
+  font-size: 14px;
+  color: #f5576c;
+}
+
+.form-debug p {
+  margin: 8px 0;
+  font-size: 13px;
+}
+
+.form-debug ul {
+  margin: 10px 0;
+  padding-left: 20px;
+}
+
+.form-debug li {
+  font-size: 12px;
+  margin: 5px 0;
+  color: #ff8888;
 }

@@ -13,6 +13,12 @@ interface User {
   updated_at: string;
 }
 
+interface BaseEntity {
+  id: number;
+  created_at: string;
+  updated_at: string;
+}
+
 interface DatabaseResult<T> {
   rows: T[];
 }
@@ -25,17 +31,18 @@ interface DatabaseOperation {
 const DATA_FILE = path.join(process.cwd(), 'data', 'users.json');
 
 // Функция для обеспечения существования директории и файла данных
-const ensureDataFile = async (): Promise<void> => {
+const ensureDataFile = async (fileName: string = 'users.json'): Promise<void> => {
   try {
-    const dataDir = path.dirname(DATA_FILE);
+    const dataDir = path.join(process.cwd(), 'data');
+    const filePath = path.join(dataDir, fileName);
     
     if (!fs.existsSync(dataDir)) {
       fs.mkdirSync(dataDir, { recursive: true });
     }
     
-    if (!fs.existsSync(DATA_FILE)) {
-      fs.writeFileSync(DATA_FILE, JSON.stringify([], null, 2));
-      console.log('Создан файл данных:', DATA_FILE);
+    if (!fs.existsSync(filePath)) {
+      fs.writeFileSync(filePath, JSON.stringify([], null, 2));
+      console.log('Создан файл данных:', filePath);
     }
   } catch (error) {
     console.error('Ошибка создания файла данных:', error);
@@ -43,24 +50,29 @@ const ensureDataFile = async (): Promise<void> => {
   }
 };
 
-// Функция для чтения данных из файла
-const readData = async (): Promise<User[]> => {
+// Универсальная функция для чтения данных из файла
+export const readDatabase = async <T extends BaseEntity>(fileName: string): Promise<T[]> => {
   try {
-    await ensureDataFile();
-    const data = fs.readFileSync(DATA_FILE, 'utf8');
-    return JSON.parse(data) as User[];
+    await ensureDataFile(fileName);
+    const filePath = path.join(process.cwd(), 'data', fileName);
+    const data = fs.readFileSync(filePath, 'utf8');
+    return JSON.parse(data) as T[];
   } catch (error) {
     console.error('Ошибка чтения файла данных:', error);
     return [];
   }
 };
 
-// Функция для записи данных в файл
-const writeData = async (data: User[]): Promise<void> => {
+// Универсальная функция для записи данных в файл
+export const writeDatabase = async <T extends BaseEntity>(
+  fileName: string,
+  data: T[]
+): Promise<void> => {
   try {
-    await ensureDataFile();
-    fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
-    console.log('Данные записаны в файл');
+    await ensureDataFile(fileName);
+    const filePath = path.join(process.cwd(), 'data', fileName);
+    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+    console.log('Данные записаны в файл:', fileName);
   } catch (error) {
     console.error('Ошибка записи в файл данных:', error);
     throw error;
@@ -68,8 +80,21 @@ const writeData = async (data: User[]): Promise<void> => {
 };
 
 // Генератор уникальных ID
-const generateId = (): number => {
-  return Date.now() + Math.floor(Math.random() * 1000);
+export const generateId = <T extends BaseEntity>(entities: T[]): number => {
+  if (entities.length === 0) {
+    return 1;
+  }
+  const maxId = Math.max(...entities.map((entity: T) => entity.id));
+  return maxId + 1;
+};
+
+// Старые функции для совместимости с существующим кодом
+const readData = async (): Promise<User[]> => {
+  return readDatabase<User>('users.json');
+};
+
+const writeData = async (data: User[]): Promise<void> => {
+  return writeDatabase<User>('users.json', data);
 };
 
 // Эмуляция SQL-подобных операций
@@ -95,7 +120,7 @@ const query = async (
         
       case 'INSERT':
         const newUser: User = {
-          id: generateId(),
+          id: generateId(users),
           name: data.name,
           address: data.address,
           city: data.city,

@@ -6,7 +6,14 @@ import {
   UserFilters,
   ApiResponse,
   PaginatedUsersResponse,
-  UserStatsResponse
+  UserStatsResponse,
+  Company,
+  CreateCompanyData,
+  UpdateCompanyData,
+  CompanyFilters,
+  PaginatedCompaniesResponse,
+  CompanyStatsResponse,
+  CompanyEmployee
 } from '@/types';
 
 // Создаем экземпляр axios с базовой конфигурацией
@@ -87,6 +94,90 @@ export const userAPI = {
   getStats: async (): Promise<ApiResponse<UserStatsResponse>> => {
     const response: AxiosResponse<ApiResponse<UserStatsResponse>> = 
       await api.get('/users/stats');
+    return response.data;
+  },
+};
+
+// API функции для работы с компаниями
+export const companyAPI = {
+  // Получить все компании
+  getCompanies: async (
+    page: number = 1,
+    limit: number = 10,
+    filters: CompanyFilters = {}
+  ): Promise<ApiResponse<PaginatedCompaniesResponse>> => {
+    const params = new URLSearchParams({
+      page: page.toString(),
+      limit: limit.toString(),
+    });
+
+    // Добавляем фильтры только если они не пустые
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value && value !== '') {
+        params.append(key, value.toString());
+      }
+    });
+
+    const response: AxiosResponse<ApiResponse<PaginatedCompaniesResponse>> =
+      await api.get(`/companies?${params}`);
+    return response.data;
+  },
+
+  // Получить компанию по ID
+  getCompany: async (id: number): Promise<ApiResponse<Company>> => {
+    const response: AxiosResponse<ApiResponse<Company>> =
+      await api.get(`/companies/${id}`);
+    return response.data;
+  },
+
+  // Создать компанию
+  createCompany: async (companyData: CreateCompanyData): Promise<ApiResponse<Company>> => {
+    const response: AxiosResponse<ApiResponse<Company>> =
+      await api.post('/companies', companyData);
+    return response.data;
+  },
+
+  // Обновить компанию
+  updateCompany: async (
+    id: number,
+    companyData: UpdateCompanyData
+  ): Promise<ApiResponse<Company>> => {
+    const response: AxiosResponse<ApiResponse<Company>> =
+      await api.put(`/companies/${id}`, companyData);
+    return response.data;
+  },
+
+  // Удалить компанию
+  deleteCompany: async (id: number): Promise<ApiResponse<Company>> => {
+    const response: AxiosResponse<ApiResponse<Company>> =
+      await api.delete(`/companies/${id}`);
+    return response.data;
+  },
+
+  // Получить статистику компаний
+  getStats: async (): Promise<ApiResponse<CompanyStatsResponse>> => {
+    const response: AxiosResponse<ApiResponse<CompanyStatsResponse>> =
+      await api.get('/companies/stats');
+    return response.data;
+  },
+
+  // Добавить сотрудника в компанию
+  addEmployee: async (
+    companyId: number,
+    employee: CompanyEmployee
+  ): Promise<ApiResponse<Company>> => {
+    const response: AxiosResponse<ApiResponse<Company>> =
+      await api.post(`/companies/${companyId}/employees`, employee);
+    return response.data;
+  },
+
+  // Удалить сотрудника из компании
+  removeEmployee: async (
+    companyId: number,
+    userId: number
+  ): Promise<ApiResponse<Company>> => {
+    const response: AxiosResponse<ApiResponse<Company>> =
+      await api.delete(`/companies/${companyId}/employees/${userId}`);
     return response.data;
   },
 };

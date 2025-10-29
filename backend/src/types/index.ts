@@ -97,6 +97,66 @@ export interface DatabaseDeleteData {
   id: number;
 }
 
+// Типы для компаний
+export interface CompanyEmployee {
+  userId: number;
+  userName: string;
+}
+
+export interface Company {
+  id: number;
+  name: string;
+  idn: string;
+  address?: string;
+  status: CompanyStatus;
+  users: CompanyEmployee[];
+  created_at: string;
+  updated_at: string;
+}
+
+// Возможные статусы компании
+export enum CompanyStatus {
+  ACTIVE = 10,
+  INACTIVE = 20
+}
+
+// Тип для создания новой компании
+export interface CreateCompanyRequest {
+  name: string;
+  idn: string;
+  address?: string;
+  status?: CompanyStatus;
+  users?: CompanyEmployee[];
+}
+
+// Тип для обновления компании
+export interface UpdateCompanyRequest {
+  name?: string;
+  idn?: string;
+  address?: string;
+  status?: CompanyStatus;
+  users?: CompanyEmployee[];
+}
+
+// Типы для фильтрации компаний
+export interface CompanyFilters {
+  name?: string;
+  idn?: string;
+  status?: CompanyStatus;
+}
+
+export interface PaginatedCompaniesResponse {
+  companies: Company[];
+  pagination: PaginationMeta;
+}
+
+export interface CompanyStatsResponse {
+  total_companies: string;
+  status_10_count: string;
+  status_20_count: string;
+  total_employees: string;
+}
+
 // Типы ошибок
 export interface ApiError extends Error {
   statusCode?: number;

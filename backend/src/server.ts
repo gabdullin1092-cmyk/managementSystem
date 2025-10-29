@@ -2,6 +2,7 @@ import express, { Application, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import userRoutes from './routes/users';
+import companyRoutes from './routes/companies';
 
 // Загрузка переменных окружения
 dotenv.config();
@@ -27,6 +28,7 @@ app.use((req: Request, res: Response, next: NextFunction): void => {
 
 // Роуты
 app.use('/api/users', userRoutes);
+app.use('/api/companies', companyRoutes);
 
 // Корневой роут
 app.get('/', (req: Request, res: Response): void => {
@@ -39,7 +41,16 @@ app.get('/', (req: Request, res: Response): void => {
       'GET /api/users/:id - Получить пользователя по ID',
       'POST /api/users - Создать пользователя',
       'PUT /api/users/:id - Обновить пользователя',
-      'DELETE /api/users/:id - Удалить пользователя'
+      'DELETE /api/users/:id - Удалить пользователя',
+      '',
+      'GET /api/companies - Получить все компании',
+      'GET /api/companies/stats - Статистика компаний',
+      'GET /api/companies/:id - Получить компанию по ID',
+      'POST /api/companies - Создать компанию',
+      'PUT /api/companies/:id - Обновить компанию',
+      'DELETE /api/companies/:id - Удалить компанию',
+      'POST /api/companies/:id/employees - Добавить сотрудника',
+      'DELETE /api/companies/:id/employees/:userId - Удалить сотрудника'
     ]
   });
 });

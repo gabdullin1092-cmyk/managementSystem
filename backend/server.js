@@ -3,6 +3,7 @@ const cors = require('cors');
 require('dotenv').config();
 
 const userRoutes = require('./routes/users');
+const companyRoutes = require('./routes/companies');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -20,6 +21,7 @@ app.use((req, res, next) => {
 
 // Роуты
 app.use('/api/users', userRoutes);
+app.use('/api/companies', companyRoutes);
 
 // Корневой роут
 app.get('/', (req, res) => {
@@ -32,7 +34,14 @@ app.get('/', (req, res) => {
             'GET /api/users/:id - Получить пользователя по ID',
             'POST /api/users - Создать пользователя',
             'PUT /api/users/:id - Обновить пользователя',
-            'DELETE /api/users/:id - Удалить пользователя'
+            'DELETE /api/users/:id - Удалить пользователя',
+            '',
+            'GET /api/companies - Получить все компании',
+            'GET /api/companies/stats - Статистика компаний',
+            'GET /api/companies/:id - Получить компанию по ID',
+            'POST /api/companies - Создать компанию',
+            'PUT /api/companies/:id - Обновить компанию',
+            'DELETE /api/companies/:id - Удалить компанию'
         ]
     });
 });

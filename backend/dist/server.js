@@ -7,6 +7,7 @@ const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const users_1 = __importDefault(require("./routes/users"));
+const companies_1 = __importDefault(require("./routes/companies"));
 // Загрузка переменных окружения
 dotenv_1.default.config();
 const app = (0, express_1.default)();
@@ -22,6 +23,7 @@ app.use((req, res, next) => {
 });
 // Роуты
 app.use('/api/users', users_1.default);
+app.use('/api/companies', companies_1.default);
 // Корневой роут
 app.get('/', (req, res) => {
     res.json({
@@ -33,7 +35,16 @@ app.get('/', (req, res) => {
             'GET /api/users/:id - Получить пользователя по ID',
             'POST /api/users - Создать пользователя',
             'PUT /api/users/:id - Обновить пользователя',
-            'DELETE /api/users/:id - Удалить пользователя'
+            'DELETE /api/users/:id - Удалить пользователя',
+            '',
+            'GET /api/companies - Получить все компании',
+            'GET /api/companies/stats - Статистика компаний',
+            'GET /api/companies/:id - Получить компанию по ID',
+            'POST /api/companies - Создать компанию',
+            'PUT /api/companies/:id - Обновить компанию',
+            'DELETE /api/companies/:id - Удалить компанию',
+            'POST /api/companies/:id/employees - Добавить сотрудника',
+            'DELETE /api/companies/:id/employees/:userId - Удалить сотрудника'
         ]
     });
 });

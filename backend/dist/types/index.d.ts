@@ -75,6 +75,53 @@ export interface DatabaseSelectByIdData {
 export interface DatabaseDeleteData {
     id: number;
 }
+export interface CompanyEmployee {
+    userId: number;
+    userName: string;
+}
+export interface Company {
+    id: number;
+    name: string;
+    idn: string;
+    address?: string;
+    status: CompanyStatus;
+    users: CompanyEmployee[];
+    created_at: string;
+    updated_at: string;
+}
+export declare enum CompanyStatus {
+    ACTIVE = 10,
+    INACTIVE = 20
+}
+export interface CreateCompanyRequest {
+    name: string;
+    idn: string;
+    address?: string;
+    status?: CompanyStatus;
+    users?: CompanyEmployee[];
+}
+export interface UpdateCompanyRequest {
+    name?: string;
+    idn?: string;
+    address?: string;
+    status?: CompanyStatus;
+    users?: CompanyEmployee[];
+}
+export interface CompanyFilters {
+    name?: string;
+    idn?: string;
+    status?: CompanyStatus;
+}
+export interface PaginatedCompaniesResponse {
+    companies: Company[];
+    pagination: PaginationMeta;
+}
+export interface CompanyStatsResponse {
+    total_companies: string;
+    status_10_count: string;
+    status_20_count: string;
+    total_employees: string;
+}
 export interface ApiError extends Error {
     statusCode?: number;
     code?: string;

@@ -33,21 +33,22 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.writeData = exports.readData = exports.query = void 0;
+exports.writeData = exports.readData = exports.query = exports.generateId = exports.writeDatabase = exports.readDatabase = void 0;
 const fs = __importStar(require("fs"));
 const path = __importStar(require("path"));
 // Путь к файлу данных
 const DATA_FILE = path.join(process.cwd(), 'data', 'users.json');
 // Функция для обеспечения существования директории и файла данных
-const ensureDataFile = async () => {
+const ensureDataFile = async (fileName = 'users.json') => {
     try {
-        const dataDir = path.dirname(DATA_FILE);
+        const dataDir = path.join(process.cwd(), 'data');
+        const filePath = path.join(dataDir, fileName);
         if (!fs.existsSync(dataDir)) {
             fs.mkdirSync(dataDir, { recursive: true });
         }
-        if (!fs.existsSync(DATA_FILE)) {
-            fs.writeFileSync(DATA_FILE, JSON.stringify([], null, 2));
-            console.log('Создан файл данных:', DATA_FILE);
+        if (!fs.existsSync(filePath)) {
+            fs.writeFileSync(filePath, JSON.stringify([], null, 2));
+            console.log('Создан файл данных:', filePath);
         }
     }
     catch (error) {
@@ -55,11 +56,12 @@ const ensureDataFile = async () => {
         throw error;
     }
 };
-// Функция для чтения данных из файла
-const readData = async () => {
+// Универсальная функция для чтения данных из файла
+const readDatabase = async (fileName) => {
     try {
-        await ensureDataFile();
-        const data = fs.readFileSync(DATA_FILE, 'utf8');
+        await ensureDataFile(fileName);
+        const filePath = path.join(process.cwd(), 'data', fileName);
+        const data = fs.readFileSync(filePath, 'utf8');
         return JSON.parse(data);
     }
     catch (error) {
@@ -67,24 +69,39 @@ const readData = async () => {
         return [];
     }
 };
-exports.readData = readData;
-// Функция для записи данных в файл
-const writeData = async (data) => {
+exports.readDatabase = readDatabase;
+// Универсальная функция для записи данных в файл
+const writeDatabase = async (fileName, data) => {
     try {
-        await ensureDataFile();
-        fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
-        console.log('Данные записаны в файл');
+        await ensureDataFile(fileName);
+        const filePath = path.join(process.cwd(), 'data', fileName);
+        fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+        console.log('Данные записаны в файл:', fileName);
     }
     catch (error) {
         console.error('Ошибка записи в файл данных:', error);
         throw error;
     }
 };
-exports.writeData = writeData;
+exports.writeDatabase = writeDatabase;
 // Генератор уникальных ID
-const generateId = () => {
-    return Date.now() + Math.floor(Math.random() * 1000);
+const generateId = (entities) => {
+    if (entities.length === 0) {
+        return 1;
+    }
+    const maxId = Math.max(...entities.map((entity) => entity.id));
+    return maxId + 1;
 };
+exports.generateId = generateId;
+// Старые функции для совместимости с существующим кодом
+const readData = async () => {
+    return (0, exports.readDatabase)('users.json');
+};
+exports.readData = readData;
+const writeData = async (data) => {
+    return (0, exports.writeDatabase)('users.json', data);
+};
+exports.writeData = writeData;
 // Эмуляция SQL-подобных операций
 const query = async (operation, data) => {
     const start = Date.now();
@@ -101,7 +118,7 @@ const query = async (operation, data) => {
                 break;
             case 'INSERT':
                 const newUser = {
-                    id: generateId(),
+                    id: (0, exports.generateId)(users),
                     name: data.name,
                     address: data.address,
                     city: data.city,
